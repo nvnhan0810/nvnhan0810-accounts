@@ -14,9 +14,13 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        if (!$request->client_id) {
+        if (!$request->client_id || !$request->redirect_url) {
             abort(404);
         }
+
+        Client::where('id', $request->client_id)
+            ->where('redirect', $request->redirect_url)
+            ->firstOrFail();
 
         $request->session()->put('client', $request->client_id);
 
@@ -59,22 +63,6 @@ class AuthController extends Controller
         ]);
 
         return redirect('/oauth/authorize?' . $query);
-    }
-
-    public function issueToken(Request $request)
-    {
-
-        $client = $this->checkSessionClient($request);
-
-        $response = Http::asForm()->post('http://127.0.0.1/oauth/token', [
-            'grant_type' => 'authorization_code',
-            'client_id' => $client->id,
-            'client_secret' => $client->secret,
-            'redirect_uri' => $client->redirect,
-            'code' => $request->code,
-        ]);
-
-        return $response->json();
     }
 
     private function checkSessionClient(Request $request)

@@ -16,8 +16,8 @@
         </style>
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
-        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-            <h1>Accounts Page</h1>
+        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50 flex items-center justify-center min-h-dvh">
+            <h1 class="text-center text-white">Account Page</h1>
         </div>
     </body>
 </html>
