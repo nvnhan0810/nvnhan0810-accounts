@@ -1,8 +1,8 @@
 #! /bin/sh
 
-set -e 
+set -e
 
-git pull origin main 
+git pull origin main
 
 php8.3 /usr/local/bin/composer install -o --no-dev
 
