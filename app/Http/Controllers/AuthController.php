@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -13,6 +14,10 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if (!$request->client_id || !$request->redirect_url) {
+            Log::info(__METHOD__ . ':' . __LINE__, [
+                'message' => 'Missing Params',
+                'data' => $request->all(),
+            ]);
             abort(404);
         }
 
@@ -32,6 +37,9 @@ class AuthController extends Controller
         $ggUser = Socialite::driver('google')->user();
 
         if ($ggUser->email !== 'nguyenvannhan0810@gmail.com') {
+            Log::info(__METHOD__ . ':' . __LINE__, [
+                'message' => 'This email not authorize',
+            ]);
             abort(403);
         }
 
@@ -68,12 +76,18 @@ class AuthController extends Controller
         $clientId = $request->session()->get('client');
 
         if (!$clientId) {
+            Log::info(__METHOD__ . ':' . __LINE__, [
+                'message' => 'Missing ClientID in Session',
+            ]);
             abort(404);
         }
 
         $client = Client::findOrFail($clientId);
 
         if (!$client) {
+            Log::info(__METHOD__ . ':' . __LINE__, [
+                'message' => 'Can not find Client',
+            ]);
             abort(404);
         }
 
