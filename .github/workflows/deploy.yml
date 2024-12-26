@@ -12,7 +12,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Copy .env
         run: |
           cp .env.prod .env
@@ -35,11 +35,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Copy build to VPS
-        run: |
-          rsync -avz --progress --delete "ssh -o StrictHostKeyChecking=no" ${{ github.workspace }}  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/html/accounts
+      - name: Set up SSH private key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Configure SSH
+        run: |
+          echo "StrictHostKeyChecking no" > ~/.ssh/config
+      - name: Copy build to VPS
+        run: |
+          rsync -avz --progress --delete -e "ssh -i ~/.ssh/id_rsa" ${{ github.workspace }}  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/html/accounts
       - name: Deploy to Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
