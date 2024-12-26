@@ -39,12 +39,14 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          mkdir -p ~/.ssh
           touch ~/.ssh/id_rsa
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
       - name: Configure SSH
         run: |
-          echo "StrictHostKeyChecking no" > ~/.ssh/config
+          touch ~/.ssh/config
+          echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - name: Copy build to VPS
         run: |
           rsync -avz --progress --delete -e "ssh -i ~/.ssh/id_rsa" ${{ github.workspace }}  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/html/accounts
