@@ -16,11 +16,11 @@ jobs:
       - name: Copy .env
         run: |
           cp .env.prod .env
-          sed -i "s|{APP_KEY}|$APP_KEY|g"
-          sed -i "s|{DB_USERNAME}|$DB_USERNAME|g"
-          sed -i "s|{DB_PASSWORD}|$DB_PASSWORD|g"
-          sed -i "s|{GOOGLE_CLIENT_ID}|$GOOGLE_CLIENT_ID|g"
-          sed -i "s|{GOOGLE_SECRET}|$GOOGLE_SECRET|g"
+          sed -i "s|{APP_KEY}|$APP_KEY|g" .env
+          sed -i "s|{DB_USERNAME}|$DB_USERNAME|g" .env
+          sed -i "s|{DB_PASSWORD}|$DB_PASSWORD|g" .env
+          sed -i "s|{GOOGLE_CLIENT_ID}|$GOOGLE_CLIENT_ID|g" .env
+          sed -i "s|{GOOGLE_SECRET}|$GOOGLE_SECRET|g" .env
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
