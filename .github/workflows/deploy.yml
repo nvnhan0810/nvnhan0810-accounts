@@ -16,11 +16,17 @@ jobs:
       - name: Copy .env
         run: |
           cp .env.prod .env
-          sed -i "s|{APP_KEY}|${{ secrets.APP_KEY }}|g"
-          sed -i "s|{DB_USERNAME}|${{ secrets.DB_USERNAME }}|g"
-          sed -i "s|{DB_PASSWORD}|${{ secrets.DB_PASSWORD }}|g"
-          sed -i "s|{GOOGLE_CLIENT_ID}|${{ secrets.GOOGLE_CLIENT_ID }}|g"
-          sed -i "s|{GOOGLE_SECRET}|${{ secrets.GOOGLE_SECRET }}|g"
+          sed -i "s|{APP_KEY}|$APP_KEY|g"
+          sed -i "s|{DB_USERNAME}|$DB_USERNAME|g"
+          sed -i "s|{DB_PASSWORD}|$DB_PASSWORD|g"
+          sed -i "s|{GOOGLE_CLIENT_ID}|$GOOGLE_CLIENT_ID|g"
+          sed -i "s|{GOOGLE_SECRET}|$GOOGLE_SECRET|g"
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
 
       - name: Install composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
