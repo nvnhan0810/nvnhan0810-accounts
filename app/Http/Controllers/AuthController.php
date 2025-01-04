@@ -6,11 +6,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 use Laravel\Passport\Client;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+
+    public function showLoginForm() {
+        return Inertia::render('Login');
+    }
+
     public function login(Request $request)
     {
         if (!$request->client_id || !$request->redirect_url) {
