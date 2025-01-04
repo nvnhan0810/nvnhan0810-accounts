@@ -3,8 +3,6 @@ name: Deploy
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,10 +29,38 @@ jobs:
       - name: Install composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          include-hidden-files: true
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/.env
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+          path: ${{ github.workspace }}
+
+      - name: Copy .env
+        run: |
+          cp .env.prod .env
+          sed -i "s|{APP_KEY}|$APP_KEY|g" .env
+          sed -i "s|{DB_USERNAME}|$DB_USERNAME|g" .env
+          sed -i "s|{DB_PASSWORD}|$DB_PASSWORD|g" .env
+          sed -i "s|{GOOGLE_CLIENT_ID}|$GOOGLE_CLIENT_ID|g" .env
+          sed -i "s|{GOOGLE_SECRET}|$GOOGLE_SECRET|g" .env
+        env:
+          APP_KEY: ${{ secrets.APP_KEY }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+
       - name: Set up SSH private key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -54,7 +80,7 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
       - name: Copy build to VPS
         run: |
-          rsync -avz --progress --delete -e "ssh -i ~/.ssh/id_rsa" ${{ github.workspace }}  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/html/accounts
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" ${{ github.workspace }}  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/html/accounts
       - name: Deploy to Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
@@ -64,7 +90,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/html/accounts
+            rm -rf /var/www/html/accounts/src
+            mv /var/www/html/accounts/nvnhan0810-accounts /var/www/html/accounts/src
+            cd /var/www/html/accounts/src
             php8.3 artisan migrate --force
+            php8.3 artisan optimize:clear
             php8.3 artisan optimize
             chown -R www-data:www-data *
