@@ -7,6 +7,7 @@
         'resources/sass/app.scss',
         'resources/js/app.ts',
     ])
+    @routes
     @inertiaHead
   </head>
   <body>

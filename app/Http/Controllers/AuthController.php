@@ -14,7 +14,16 @@ class AuthController extends Controller
 {
 
     public function showLoginForm() {
+        if (Auth::check()) {
+            return redirect()->route('index');
+        }
         return Inertia::render('Login');
+    }
+
+    public function adminLogin(Request $request) {
+        $request->session()->put('is_admin_client', 'nvnhan0810-accounts');
+
+        return Inertia::location(Socialite::driver('google')->redirect()->getTargetUrl());
     }
 
     public function login(Request $request)
@@ -38,7 +47,11 @@ class AuthController extends Controller
 
     public function callback(Request $request)
     {
-        $client = $this->checkSessionClient($request);
+        $isAdminLogin = $request->session()->get('is_admin_client') === 'nvnhan0810-accounts';
+
+        if (!$isAdminLogin) {
+            $client = $this->checkSessionClient($request);
+        }
 
         $ggUser = Socialite::driver('google')->user();
 
@@ -65,6 +78,12 @@ class AuthController extends Controller
         }
 
         Auth::login($dbUser, true);
+
+        $request->session()->forget(['is_admin_client', 'client']);
+
+        if ($isAdminLogin) {
+            return redirect()->route('index');
+        }
 
         $query = http_build_query([
             'client_id' => $client->id,
@@ -98,5 +117,11 @@ class AuthController extends Controller
         }
 
         return $client;
+    }
+
+    public function logout() {
+        Auth::logout();
+
+        return Inertia::location(route('admin.login.index'));
     }
 }
