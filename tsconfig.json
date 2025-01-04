@@ -11,7 +11,12 @@
         "forceConsistentCasingInFileNames":true,
         "noEmit":true,
         "isolatedModules":true,
-        "types": ["vite/client"]
+        "types": ["vite/client"],
+        "paths": {
+            "ziggy-js": [
+                "./vendor/tightenco/ziggy"
+            ]
+        }
     },
     "include":[
         "resources/js/**/*.ts",
