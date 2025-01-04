@@ -93,6 +93,8 @@ jobs:
             rm -rf /var/www/html/accounts/src
             mv /var/www/html/accounts/nvnhan0810-accounts /var/www/html/accounts/src
             cd /var/www/html/accounts/src
+            rm -rf /var/www/html/accounts/src/storage/logs
+            ln -s /var/www/html/accounts/logs/ /var/www/html/accounts/src/storage/
             php8.3 artisan migrate --force
             php8.3 artisan optimize:clear
             php8.3 artisan optimize
