@@ -35,7 +35,7 @@ class ClientController extends BaseController
         $client = $this->update($request, $id);
 
         return redirect()->route('index')->with([
-            'edit_client_id' => $client->id,
+            'edit_client_id' => $id,
         ]);
     }
 
