@@ -1,6 +1,6 @@
 type Client = {
-    id: String;
-    name: String;
-    redirect: String;
-    secret?: String;
+    id: string;
+    name: string;
+    redirect: string;
+    secret?: string;
 }

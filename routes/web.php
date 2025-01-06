@@ -13,9 +13,9 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/clients', [ClientController::class, 'newStore'])->name('clients.store');
-    // Route::get('/clients/:id/edit', [ClientController::class, 'edit'])->name('clients.edit');
-    // Route::patch('/clients/:id/update', [ClientController::class, 'newUpdate'])->name('clients.update');
-    // Route::delete('/clients/:id/delete', [ClientController::class, 'delete'])->name('clients.delete');
+    Route::get('/clients/{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::patch('/clients/{id}/update', [ClientController::class, 'newUpdate'])->name('clients.update');
+    Route::delete('/clients/{id}/delete', [ClientController::class, 'delete'])->name('clients.delete');
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name("login");
