@@ -1,11 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { router } from '@inertiajs/vue3';
-import { inject } from 'vue';
-
-const route = inject('route');
 
 async function submit() {
-    await router.post(route('admin.login.submit'));
+    router.post(route('admin.login.submit'));
 }
 </script>
 

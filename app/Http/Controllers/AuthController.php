@@ -122,6 +122,6 @@ class AuthController extends Controller
     public function logout() {
         Auth::logout();
 
-        return Inertia::location(route('admin.login.index'));
+        return Inertia::location(route('login'));
     }
 }
