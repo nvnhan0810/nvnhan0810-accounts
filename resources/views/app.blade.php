@@ -12,5 +12,7 @@
   </head>
   <body>
     @inertia
+
+    <div id="modals" class="relative z-20"></div>
   </body>
 </html>

@@ -19,9 +19,17 @@ class IndexController extends Controller
             }
         }
 
+        $editClient = request()->session()->get('edit_client_id');
+        $deletedClient =
+        request()->session()->get('delete_client');
+
+
+
         return Inertia::render('Dashboard/Index', [
             'clients' => $clients,
             'newClient' => $newClient,
+            'editClient' => $editClient,
+            'deletedClient' => $deletedClient,
         ]);
     }
 }
