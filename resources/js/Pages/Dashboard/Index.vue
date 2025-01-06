@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { inject, onMounted, ref } from 'vue';
-
-const route = inject('route');
+import { onMounted, ref } from 'vue';
+import { route } from 'ziggy-js';
 
 const props = defineProps<{
     newClient?: Client,
@@ -15,6 +14,8 @@ onMounted(() => {
     setTimeout(() => {
         showCreated.value = false;
     }, 5000);
+
+    return { route };
 });
 </script>
 
