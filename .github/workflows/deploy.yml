@@ -105,8 +105,8 @@ jobs:
             cd /var/www/html/accounts/src
             rm -rf /var/www/html/accounts/src/storage/logs
             ln -s /var/www/html/accounts/logs/ /var/www/html/accounts/src/storage/
-            ln -s /var/www/html/accounts/oauth-public.key /var/www/html/accounts/src/storage/
-            ln -s /var/www/html/accounts/oauth-private.key /var/www/html/accounts/src/storage/
+            cp /var/www/html/accounts/oauth-public.key /var/www/html/accounts/src/storage/
+            cp /var/www/html/accounts/oauth-private.key /var/www/html/accounts/src/storage/
             php8.3 artisan migrate --force
             php8.3 artisan optimize:clear
             php8.3 artisan optimize
