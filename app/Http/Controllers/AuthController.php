@@ -49,12 +49,14 @@ class AuthController extends Controller
                 'response_type' => 'code',
                 'scope' => '',
                 'prompt' => '',
+                'state' => $request->state,
             ]);
 
             return redirect('/oauth/authorize?' . $query);
         }
 
         $request->session()->put('nvnhan0810_client', $request->client_id);
+        $request->session()->put('nvnhan0810_client_state', $request->state);
 
         return redirect()->route('login');
     }
@@ -93,7 +95,9 @@ class AuthController extends Controller
 
         Auth::login($dbUser, true);
 
-        $request->session()->forget(['is_admin_client', 'nvnhan0810_client']);
+        $clientState = $request->session()->pull('nvnhan0810_client_state');
+
+        $request->session()->forget(['is_admin_client', 'nvnhan0810_client', 'nvnhan0810_client_state']);
 
         if ($isAdminLogin) {
             return redirect()->route('index');
@@ -105,6 +109,7 @@ class AuthController extends Controller
             'response_type' => 'code',
             'scope' => '',
             'prompt' => '',
+            'state' => $clientState,
         ]);
 
         return redirect('/oauth/authorize?' . $query);
