@@ -38,9 +38,21 @@ class AuthController extends Controller
             abort(404);
         }
 
-        Client::where('id', $request->client_id)
+        $client = Client::where('id', $request->client_id)
             ->where('redirect', $request->redirect_url)
             ->firstOrFail();
+
+        if (Auth::check() && Auth::user()->email == 'nguyenvannhan0810@gmail.com') {
+            $query = http_build_query([
+                'client_id' => $client->id,
+                'redirect_uri' => $client->redirect,
+                'response_type' => 'code',
+                'scope' => '',
+                'prompt' => '',
+            ]);
+
+            return redirect('/oauth/authorize?' . $query);
+        }
 
         $request->session()->put('nvnhan0810_client', $request->client_id);
 
