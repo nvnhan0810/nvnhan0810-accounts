@@ -21,7 +21,9 @@ class AuthController extends Controller
     }
 
     public function adminLogin(Request $request) {
-        $request->session()->put('is_admin_client', 'nvnhan0810-accounts');
+        if (!$request->session()->has('nvnhan0810_client')) {
+            $request->session()->put('is_admin_client', 'nvnhan0810-accounts');
+        }
 
         return Inertia::location(Socialite::driver('google')->redirect()->getTargetUrl());
     }
@@ -40,9 +42,9 @@ class AuthController extends Controller
             ->where('redirect', $request->redirect_url)
             ->firstOrFail();
 
-        $request->session()->put('client', $request->client_id);
+        $request->session()->put('nvnhan0810_client', $request->client_id);
 
-        return Socialite::driver('google')->redirect();
+        return redirect()->route('login');
     }
 
     public function callback(Request $request)
@@ -79,7 +81,7 @@ class AuthController extends Controller
 
         Auth::login($dbUser, true);
 
-        $request->session()->forget(['is_admin_client', 'client']);
+        $request->session()->forget(['is_admin_client', 'nvnhan0810_client']);
 
         if ($isAdminLogin) {
             return redirect()->route('index');
@@ -98,7 +100,7 @@ class AuthController extends Controller
 
     private function checkSessionClient(Request $request)
     {
-        $clientId = $request->session()->get('client');
+        $clientId = $request->session()->get('nvnhan0810_client');
 
         if (!$clientId) {
             Log::info(__METHOD__ . ':' . __LINE__, [
